@@ -189,15 +189,37 @@ docker-compose --version
     
     # Acessar http://localhost:8090/metrics
     ```
-### Visualizando Métricas Utilizando o Grafana
 
-1. **Execução do Docker Compose e subida dos containers**
+
+**Adicionando Prometheus para visualização de Métricas**
+
+ **Execução do Docker Compose e subida dos containers**
 
 Para subir os containers, execute o comando:
 
 ```
 docker-compose up -d
 ```
+
+Verificar se os containers estão up, execute o comando:
+
+```
+docker-compose ps
+```
+
+Acesse a porta http://9090 para abrir o Prometheus. Clique em Status, depois em Targets e verifique se todos estão ups. Observe que dará para coletar as métricas simple_serve, node-exporter e do prometheus.
+
+### Visualizando Métricas Utilizando o Grafana para a criação de Dashboard
+
+Acesse a porta http://3000 para abrir o Grafana. Para o laboratório eu usei para o login e senha: admin. Abrirá a página inicial do Grafana, clique em Data Source, abrirá nova página para você adicionar o Data Source, clique em Prometheus.
+
+Essa página ele pede o name, endereçõ http://localhost:9090 para fazer a integração, clique em Save % Test para salvar e se comunicar com o prometheus.
+
+Na mesma página clique em Dashboard, clique em Import.
+
+Volte para home e acesse Complete - Create your first dashboard. Você tera 3 opções de escolha para criar o seu Dashboard.
+
+
 
 
 

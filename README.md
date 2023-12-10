@@ -19,6 +19,37 @@ E foi usado nesse laboratório prático sobre observabilidade ministrada pelo pr
 
 ### Introdução ao Prometheus
 - **Instalação do Docker e Docker-compose**
+
+Instalar a ferramenta Compose é fácil, mas primeiro certifique-se de ter o Docker instalado.
+
+Rode esse comando no seu terminal para saber se o Doceker realmente esta instalado.
+
+```
+docker --version
+
+```
+Se não aparecer uma mensagem semelhante a esta Docker version 20.10.21, significa que você ainda não tem o Docker instalado.
+
+Caso esteja utilizando alguma distribuição Linux, basta realizar a instalação com o seguinte comando:
+
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+Os binários baixados da Internet não podem ser executados por padrão. Portanto, basta usar o programa chmod para aplicar permissões de execução (+x) ao binário que acabamos de baixar. Execute o seguinte comando em seu terminal:
+
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+Agora basta executar docker-compose --version para verificar a instalação. Se tudo correr bem, você deverá ver a seguinte saída (ou semelhante) em seu terminal:
+
+```
+docker-compose --version
+# Docker Compose version v2.5.0
+```
+
+
+
+  
 - **Criação do arquivo de configuração `prometheus.yml`**
   
   ```

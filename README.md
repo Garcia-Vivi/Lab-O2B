@@ -144,7 +144,7 @@ docker-compose --version
     
     # Buildar o arquivo go
     go build server.go
-    # Executar o servidor
+    # Executar o servidor em outra linha de comando
     ./server
 
     
@@ -189,11 +189,19 @@ docker-compose --version
     
     # Acessar http://localhost:8090/metrics
     ```
+### Visualizando Métricas Utilizando o Grafana
+
+1. **Execução do Docker Compose e subida dos containers**
+
+Para subir os containers, execute o comando:
+
+```
+docker-compose up -d
+```
 
 
-    2. Subir o container do promethues e visualizar a métrica 
-        
-        ping_request_count
+
+  
     
 
 

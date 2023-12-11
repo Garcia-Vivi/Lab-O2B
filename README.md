@@ -4,7 +4,7 @@
 
 Este laboratório é baseado no exemplo disponível no site [prometheus.io](https://prometheus.io/docs/introduction/overview/).
 
-E foi usado nesse laboratório prático sobre observabilidade ministrada pelo professor Patrick Cardoso da empresa O2B.
+  
 
 ## Tecnologias Utilizadas:
 * Linux (baseado no Ubuntu)
@@ -15,10 +15,10 @@ E foi usado nesse laboratório prático sobre observabilidade ministrada pelo pr
 * Grafana
 * Alertmanager
 
-## Documentação do Prometheus:
 
-### Introdução ao Prometheus
-- **Instalação do Docker e Docker-compose**
+
+
+## Instalação do  Docker-compose
 
 Instalar a ferramenta Compose é fácil, mas primeiro certifique-se de ter o Docker instalado.
 
@@ -75,8 +75,7 @@ docker-compose --version
 
 - **Criação do arquivo de configuração `docker-compose.yml`**
 
-        
-- **Visualizando métricas utilizando o Grafana**
+      
 
    ```docker
         version: '3'
@@ -87,6 +86,7 @@ docker-compose --version
               - 9090:9090
             volumes:
               - ./prometheus.yml:/etc/prometheus/prometheus.yml
+              - ./rules.yml:/etc/prometheus/rules.yml
             command:
               - '--config.file=/etc/prometheus/prometheus.yml'
             depends_on:
@@ -100,10 +100,19 @@ docker-compose --version
             network_mode: "host"
 
           grafana:
-          image: grafana/grafana
-          ports:
-            - 3000:3000
-          network_mode: "host"
+            image: grafana/grafana
+            ports:
+              - 3000:3000
+            network_mode: "host"
+
+          alertmanage:  
+            container_name: alertmanager
+            image: prom/alertmanager
+            volumes:
+              - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+            ports:
+              - 9093:9093
+            network_mode: "host"
 
     ```
 
@@ -193,7 +202,7 @@ docker-compose --version
 
 **Adicionando Prometheus para visualização de Métricas**
 
- **Execução do Docker Compose e subida dos containers**
+ **Execução do Docker-compose e subida dos containers**
 
 Para subir os containers, execute o comando:
 
@@ -219,20 +228,87 @@ Na mesma página clique em Dashboard, clique em Import.
 
 Volte para home e acesse Complete - Create your first dashboard. Você tera 3 opções de escolha para criar o seu Dashboard.
 
+## Alertas Baseados em Métricas
+
+**Implementação de alertas utilizando o Alertmanager**
+
+Para utilizar o alertmanager, destrua os containers e suba eles novamente com esses arquivos novos.
+
+Ajuste o arquivo `prometheus.yml`
+
+```
+
+global:
+  scrape_interval: 15s
+
+  evaluation_interval: 10s
+rule_files:
+  - rules.yml
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+       - localhost:9093
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+  - job_name: simple_server
+    static_configs:
+      - targets: ["localhost:8090"]
+  - job_name: node-exporter
+    static_configs:
+      - targets: ["localhost:9100"]
+
+```
+
+**Criação do arquivo `alertmanager.yml`**
+
+```
+
+global:
+  resolve_timeout: 5m
+route:
+  receiver: webhook_receiver
+receivers:
+    - name: webhook_receiver
+      webhook_configs:
+        - url: '<INSERT-YOUR-WEBHOOK>'-> 
+          send_resolved: false
+
+```
 
 
 
 
-  
+
+Nesse laboratório eu utilizei o webhook como receptor. Para criar o seu webhook acesse webhook.site e copie a primeira opção 'Your unique URL'. Cada URL é única.
+
+
+  **Criação do arquivo `rules.yml`**
+
+  ```
+groups:
+ - name: Count greater than 5
+   rules:
+   - alert: CountGreaterThan5
+     expr: ping_request_count > 5
+     for: 10s
+
+```
     
+Acesse o site do Prometheus para verificar se está tudo up. Acesse a métrica `ping_request_count`
 
+Clique em Alerts e verá o alerta configurado. 
 
+Clique em Status, Roles e verá a regra configurada.
 
+Acesse a aplicação e passe de 5 vezes para gerar o alerta
 
+Vá para o webhook.site e veja se já disparou o alerta.
 
-
-
-
+Com esses passos, você estará pronto para explorar e entender melhor o Prometheus, Grafana e Alertmanager no contexto deste laboratório. Boas explorações!
 
 
 
